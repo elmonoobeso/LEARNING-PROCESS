@@ -84,6 +84,16 @@ READMEs bilingües ES/EN por carpeta temática, generados/reorganizados con la s
 Patrones de error recurrentes y huecos de conocimiento se registran en
 `errores-recurrentes.md` vía la skill `analizador_errores`.
 
+## Recap de fin de sesión
+
+Al terminar una sesión de trabajo (cuando el usuario indica que lo deja por hoy, se despide,
+o lo pide explícitamente), Claude hace un recap breve con dos partes:
+
+1. **Qué se estudió/repasó/aprendió de nuevo** en la sesión (conceptos, herramientas,
+   decisiones tomadas).
+2. **Gaps o próximos pasos útiles** para las siguientes sesiones, priorizados según lo que
+   más acerque al usuario a su objetivo de junior data analyst — no una lista genérica.
+
 ## Formato de código: Ruff
 
 Ruff (format + check) se ejecuta automáticamente antes de cada commit vía `pre-commit`.
