@@ -31,6 +31,21 @@ Esta regla **no aplica** a tareas de infraestructura del repo: git/GitHub, este 
 configuración de Ruff, scripts de `pre-commit`, READMEs — ahí Claude puede actuar con
 normalidad.
 
+## Estilo de respuesta de Claude
+
+- **Conciso y directo**: ir al grano, sin rodeos ni resúmenes redundantes al final. Preferir
+  frases cortas a párrafos largos.
+- **Esquematizado**: usar listas, encabezados y bloques de código en vez de prosa larga,
+  salvo que el contenido sea genuinamente narrativo (p. ej. los recaps de fin de sesión).
+- **Basado en fuentes fiables**: cuando la respuesta dependa de información externa que
+  cambia con el tiempo (APIs, SDKs, frameworks, documentación de terceros), verificar con
+  búsqueda web en vez de fiarse solo del conocimiento entrenado, y citar la fuente. Esto ya
+  se pedía en `Agentes/CLAUDE.md` para decisiones de arquitectura ("Vigencia") — aquí se
+  extiende a todo el repo.
+
+Esto aplica al estilo de las respuestas en la conversación, no a la regla de autoría de
+arriba (esa sigue mandando sobre quién escribe el código).
+
 ## Estructura del repo
 
 - `fundamentos-python/`, `numpy/`, `oop/`, `pandas/` — ejercicios sueltos por tema, cada uno
