@@ -22,6 +22,23 @@ sintaxis). El objetivo declarado del usuario tiene dos partes distintas:
   Claude SÍ puede escribir código y proponer patrones, porque el objetivo explícito es
   aprender por exposición y construir criterio, no memorizar sintaxis nueva desde cero.
 
+## Apuntes de arquitectura (`apuntes-arquitectura/`) y modo de trabajo en agente 3
+
+Decidido por el usuario el 2026-10-09:
+
+- `Agentes/apuntes-arquitectura/` es su guía de estudio sobre diseño de agentes en general.
+  La escribe Claude y **crece al ritmo del agente 3**: se amplía cuando el agente llega a una
+  decisión o el usuario pregunta algo de arquitectura (la respuesta se incorpora al módulo
+  que toque, no se queda solo en el chat). No escribir módulos por adelantado. Seguir la
+  plantilla y el índice de su `README.md`, y actualizar `chuleta-decisiones.md`.
+- Ciclo: el agente llega a una decisión → Claude verifica con búsqueda web y amplía los
+  apuntes → el usuario decide y justifica → Claude contrasta y construye esa parte → se
+  registra en `decisiones-arquitectura.md`.
+- **Excepción a la regla de autoría, solo en `Agente3_Ermenegildo/`**: el código lo escribe
+  Claude (también la lógica de datos). El usuario quiere criterio de diseño, no escribir el
+  código del framework. El repaso de Python lo hace aparte, con ejercicios propios, donde la
+  regla de autoría normal sigue vigente. La excepción debe constar en el README del agente.
+
 ## Prioridad de aprendizaje
 
 Lo importante no es dominar la sintaxis de un framework concreto. Es aprender a
