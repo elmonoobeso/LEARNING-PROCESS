@@ -105,8 +105,21 @@ def obtencion_datos_prevalencia(url_prevalencia,params2):
     except requests.exceptions.ConnectionError:
         print("No se pudo conectar con la A")
 
-obtener=obtencion_datos_ensayos(url_ensayos,params)
-print(obtener.head())
-obtener.info()
 
 
+def analisis_panoramico(tabla):
+    print(tabla.shape)
+    print(tabla.dtypes)
+    print(tabla.describe())
+    print(tabla.isnull())
+    print( tabla["conditions"].describe()) 
+    print(tabla["collaborators"].describe())
+    return
+tabla = obtencion_datos_ensayos(url_ensayos, params)
+resultado = analisis_panoramico(tabla)
+
+
+
+#obtener=obtencion_datos_ensayos(url_ensayos,params)
+#print(obtener.head())
+#obtener.info()
