@@ -1,1 +1,5 @@
 .env
+
+# Datos descargados y bases de datos generadas: se versiona el codigo, no los datos
+*.csv
+*.db
