@@ -15,7 +15,8 @@ from dotenv import load_dotenv
 url_ensayos="https://clinicaltrials.gov/api/v2/studies"
 
 params = {
-    "query.intr": "biosimilar",
+    "query.term": "AREA[InterventionName]biosimilar OR AREA[OfficialTitle]biosimilar OR AREA[BriefTitle]biosimilar"
+,
     "fields": "NCTId,BriefTitle,OverallStatus,LeadSponsorName,CollaboratorName,StartDate,Phase,HasResults,Condition",
  # las columnas que quieres, tú decides cuáles
     "pageSize": 1000 #maximo que permite la api
@@ -108,12 +109,21 @@ def obtencion_datos_prevalencia(url_prevalencia,params2):
 
 
 def analisis_panoramico(tabla):
-    print(tabla.shape)
-    print(tabla.dtypes)
-    print(tabla.describe())
-    print(tabla.isnull())
+    tabla.info()
     print( tabla["conditions"].describe()) 
     print(tabla["collaborators"].describe())
+    print(tabla["phase"].describe())
+    print(tabla["phase"].value_counts())
+    print(tabla["status"].value_counts())
+    print(tabla["status"].describe())
+    print(tabla["nct_id"].duplicated())
+    #tabla=tabla.set_index("start_date")
+    inicio_rango=tabla["start_date"].min()
+    inicio_rango=inicio_rango.date()
+    fin_rango=tabla["start_date"].max()
+    fin_rango=fin_rango.date()
+    print(f"El periodo empieza {inicio_rango} y acaba {fin_rango}")
+
     return
 tabla = obtencion_datos_ensayos(url_ensayos, params)
 resultado = analisis_panoramico(tabla)
