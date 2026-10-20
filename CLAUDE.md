@@ -2,8 +2,10 @@
 
 ## Qué es este repo
 
-Portfolio de aprendizaje de Miguel Ángel Leo Acedo (farmacia → data analyst) hacia un puesto
-de **junior data analyst**. Detalle completo en `README.md`. Puntos clave que condicionan
+Portfolio de aprendizaje de Miguel Ángel Leo Acedo (data & IA aplicada a farmacia; +5 años
+como técnico en farmacia, estudiante del Grado en Farmacia, creador de SmartPharma) hacia un
+puesto de **data analyst en el sector salud/farmacia**. Al describirle: primero el rol
+profesional, luego la experiencia, y la formación al final; nunca "farmacéutico". Detalle completo en `README.md`. Puntos clave que condicionan
 cómo se trabaja aquí:
 
 - Es público y lo pueden revisar reclutadores: el código y el historial de commits también
@@ -123,7 +125,7 @@ o lo pide explícitamente), Claude hace un recap breve con dos partes:
 1. **Qué se estudió/repasó/aprendió de nuevo** en la sesión (conceptos, herramientas,
    decisiones tomadas).
 2. **Gaps o próximos pasos útiles** para las siguientes sesiones, priorizados según lo que
-   más acerque al usuario a su objetivo de junior data analyst — no una lista genérica.
+   más acerque al usuario a su objetivo de data analyst en salud/farmacia — no una lista genérica.
 
 ## Formato de código: Ruff
 

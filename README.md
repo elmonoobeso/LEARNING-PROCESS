@@ -16,13 +16,17 @@
 
 ## Quién soy
 
-Miguel Ángel Leo Acedo. **Estudiante de Farmacia con más de 5 años de experiencia como
-técnico en farmacia.** Uno el día a día sanitario con datos, IA y programación — por eso
-casi todos los ejercicios de este repositorio usan datos de farmacia, medicamentos, stock,
-ventas y alertas sanitarias: no es casualidad, es el dominio que mejor conozco y donde
-primero quiero aportar valor con datos.
+Miguel Ángel Leo Acedo. **Data & IA aplicada a farmacia**: análisis de datos de negocio,
+optimización de stock y agentes LLM sobre datos sanitarios. Más de 5 años trabajando en
+farmacia como técnico y creador de [SmartPharma](https://github.com/elmonoobeso/SmartPharma),
+herramienta de análisis de negocio y predicción de demanda en piloto con una farmacia real.
+Formación: Grado en Farmacia (en curso).
 
-Mi objetivo es entrar en un puesto de **junior data analyst**, y a partir de ahí seguir
+Por eso casi todos los ejercicios de este repositorio usan datos de farmacia, medicamentos,
+stock, ventas y alertas sanitarias: no es casualidad, es el dominio que mejor conozco y donde
+aporto valor con datos.
+
+Mi objetivo es un puesto de **data analyst en el sector salud/farmacia**, y seguir
 aprendiendo con la misma lógica con la que está construido este repositorio: sin atajos, sin
 ocultar lo que todavía no domino, y siempre preguntándome para qué sirve realmente lo que
 estoy construyendo.
@@ -128,11 +132,13 @@ la fuente de verdad para los ejercicios nuevos.
 
 ## Who I am
 
-Miguel Ángel Leo Acedo. **Pharmacy student with 5+ years of experience as a pharmacy
-technician.** I bring day-to-day healthcare experience together with data, AI and
-programming — that's why most exercises here use pharmacy, drug stock, sales, and
-health-alert data: it's the domain I know best and where I want to bring value with data first. My goal is
-a **junior data analyst** role, and to keep learning the same way this repository is built:
+Miguel Ángel Leo Acedo. **Data & AI for pharmacy**: business analytics, inventory
+optimization and LLM agents on healthcare data. 5+ years working in pharmacy as a
+technician, and creator of [SmartPharma](https://github.com/elmonoobeso/SmartPharma), a
+business-analytics and demand-forecasting tool piloted in a real pharmacy. Education:
+Pharmacy degree (in progress). That's why most exercises here use pharmacy, drug stock,
+sales, and health-alert data: it's the domain I know best and where I bring value with
+data. My goal is a **data analyst role in healthcare/pharmacy**, and to keep learning the same way this repository is built:
 no shortcuts, nothing hidden, always asking what a tool is actually useful for.
 
 ## What we do here and why
