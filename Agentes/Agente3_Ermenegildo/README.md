@@ -39,16 +39,18 @@ opportunity against patent expiry and the history of failed trials. Full design 
 | Mercado — `obtencion_datos_mercado` | ❌ Sin fuente definida, no ejecutable / No data source yet, not runnable |
 | Prevalencia — `obtencion_datos_prevalencia` | ❌ Sin fuente definida, no ejecutable / No data source yet, not runnable |
 | Nodos de análisis y de decisión / Analysis and decision nodes | ❌ Sin empezar / Not started |
-| Orquestación (framework) / Orchestration (framework) | ❌ Sin decidir / Not decided |
+| Orquestación (framework) / Orchestration (framework) | 🟡 Decidido LangGraph, sin implementar / LangGraph chosen, not implemented yet |
 
 ## Decisiones de arquitectura / Architecture decisions
 
-Todavía ninguna tomada. Se registrarán aquí y en
-[../decisiones-arquitectura.md](../decisiones-arquitectura.md) cuando el agente llegue a cada
-una.
+Detalle completo, con alternativas, en
+[../decisiones-arquitectura.md](../decisiones-arquitectura.md).
+Full detail, with alternatives, in the file above.
 
-None taken yet. They will be recorded here and in
-[../decisiones-arquitectura.md](../decisiones-arquitectura.md) as the agent reaches each one.
+| Fecha / Date | Decisión / Decision | Por qué / Why |
+|---|---|---|
+| 2026-09-20 | **LangGraph** como orquestador / as orchestrator | Cascada de estado A→B→C con ramas condicionales; CrewAI descartado porque los nodos son reglas fijas, no razonamiento de un LLM / State cascade with conditional branches; CrewAI rejected because nodes are fixed rules, not LLM reasoning |
+| 2026-09-20 | **Python plano primero**, LangGraph después / **Plain Python first**, LangGraph later | No mezclar la curva de aprendizaje de la librería con la lógica real; con estado externo explícito, migrar es solo conectar nodos / Don't mix the library's learning curve with the real logic; with explicit external state, migrating is just wiring nodes |
 
 ## Cómo ejecutarlo / How to run
 
