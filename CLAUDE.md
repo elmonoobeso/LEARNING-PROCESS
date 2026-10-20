@@ -13,9 +13,19 @@ cómo se trabaja aquí:
 
 ## Regla de autoría (la más importante — leer antes de tocar cualquier ejercicio o agente)
 
-**Claude nunca escribe el código de los ejercicios ni de los agentes en `Agentes/`.** El
-código lo escribe siempre el usuario a mano. El uso permitido de Claude en el código es
-exclusivamente:
+La autoría se declara **por niveles** (tabla completa en la "Nota de autoría" del
+`README.md` raíz; cualquier cambio de nivel se refleja ahí y en el README afectado):
+
+- **Ejercicios** (`fundamentos-python/`, `oop/`, `numpy/`, `pandas/`) y **lógica de
+  análisis/dominio de `agente_1.1` y `agente_2`**: regla estricta de abajo.
+- **Arquitectura/orquestación de agentes**: Claude puede escribir código (ver
+  `Agentes/CLAUDE.md`).
+- **`Agentes/Agente3_Ermenegildo/`**: excepción completa decidida por el usuario el
+  2026-10-09 — Claude escribe el código bajo su dirección; el reparto exacto consta en el
+  README del agente.
+
+**Regla estricta: Claude nunca escribe el código de los ejercicios.** El código lo escribe
+siempre el usuario a mano. El uso permitido de Claude en el código es exclusivamente:
 
 1. Proponer o plantear ejercicios.
 2. Corregir o **revisar** código después de que el usuario lo haya escrito (señalar
@@ -93,6 +103,12 @@ qué quedó pendiente.
 
 READMEs bilingües ES/EN por carpeta temática, generados/reorganizados con la skill
 `documentador_estudio`.
+
+**Las decisiones no se quedan en el chat.** Toda decisión de diseño, arquitectura o
+autoría tomada en una sesión se escribe en el repo **antes de cerrar la sesión o el PR**
+(README del agente/carpeta afectada y, si es de arquitectura,
+`Agentes/decisiones-arquitectura.md`). Antes de abrir un PR, comprobar que el README raíz
+(tabla resumen, estructura, nota de autoría) sigue reflejando el estado real del repo.
 
 ## Seguimiento de errores
 
