@@ -1,19 +1,39 @@
 # Errores recurrentes y huecos de conocimiento
-Último análisis: 2026-08-31 (hasta commit 043e028)
+Último análisis: 2026-10-21 (hasta commit b3640cc)
 
 Cuando pases esta lista para pedir ejercicios de repaso, ya viene
 agrupada por prioridad — no hace falta que añadas nada.
 
+**Qué se analiza**: solo código escrito por mí (modo *Aprendizaje*), más las partes de
+`Agente3_Ermenegildo` que su README atribuye al usuario. El código escrito por la IA no
+cuenta como error mío. También entran los huecos detectados en sesión (apuntes del Agente 3,
+correcciones de mis "Qué aprendí" y fallos de la comprensión verificada).
+
 ## 🔴 Prioridad alta
 
-- **Manejo de excepciones** — decisión subóptima: `except` demasiado amplio o sin tipar,
-  usado de forma inconsistente. En `fundamentos-python/2026-08-04_normalizacion-segmentacion-sets.py`
-  (`segmentacion`) hay un `except:` desnudo que traga cualquier error sin información. En
-  `oop/2026-08-11_clase-csvanalyzer-parseo.py` (`parseo`) se usa `except Exception as error`
-  genérico sin diferenciar tipos. Contrasta con `oop/2026-08-07_clase-datapipeline-logging-excepciones.py`,
-  donde sí se hace bien (excepciones específicas `ZeroDivisionError`/`TypeError` antes del
-  `Exception` genérico) — el patrón correcto ya se domina, pero no se aplica de forma constante.
-  Visto en: fundamentos-python/2026-08-04, oop/2026-08-11 (2026-08-11).
+- **Función que devuelve `None` sin avisar tras capturar una excepción** — decisión
+  subóptima recurrente (nuevo). `obtencion_datos` en `agente_2` y las tres funciones de
+  obtención del agente 3 capturan `Timeout`/`HTTPError`/`ConnectionError`, imprimen un
+  mensaje y terminan sin `return`: devuelven `None` en silencio. El error aparece después,
+  más lejos y más confuso (p. ej. `for registro in self.datos` con `self.datos = None` lanza
+  `TypeError`). Hay que decidir una política: relanzar la excepción o devolver algo
+  explícito que quien llama compruebe. También señalado en los apuntes del Agente 3 (hueco 8).
+  Visto en: Agentes/agente_2/agente_2.py (2026-09-03), Agentes/Agente3_Ermenegildo/agent_3.py
+  (2026-10-09).
+
+- **Grano de la tabla: un registro contado dos veces** — decisión subóptima (nuevo). En
+  `AgenteFDA.validar_clases`, un mismo registro puede acabar dos veces en `no_validos` (clase
+  inválida y campos vacíos) y a la vez en `validos_clase` y en `no_validos`. Los conteos que
+  salen de esas listas quedan inflados sin dar error. Es el mismo hueco que los apuntes del
+  Agente 3 llaman "grano" (hueco 2): decidir qué es una fila antes de transformar.
+  Visto en: Agentes/agente_2/agente_2.py (2026-09-03).
+
+- **Verificar la forma de los datos antes de usarlos** — hueco (nuevo, de sesión).
+  `obtencion_datos_prevalencia` devuelve `datos["results"][0]` (solo el primer elemento, y
+  la API de Socrata devuelve una lista directa, sin clave `results`), y en sesión costó
+  distinguir `["results"]` de `["studies"]`. Antes de indexar, comprobar con `type()`,
+  `.keys()` y `len()`. Apuntes del Agente 3, huecos 3 y 4.
+  Visto en: Agentes/Agente3_Ermenegildo/agent_3.py (2026-10-09).
 
 - **Pandas — olvidar reasignar operaciones que no mutan in-place** — decisión subóptima
   recurrente en dos archivos distintos: `df.drop_duplicates()` y
@@ -52,17 +72,49 @@ agrupada por prioridad — no hace falta que añadas nada.
   o el parámetro `i`).
   Visto en: pandas/2026-08-29.
 
-- **Hueco: manejo de APIs/requests** — no aparece ni una sola vez en todo el repo: no hay
-  `import requests`, ni llamadas HTTP, ni manejo de respuestas/errores de red. Es un concepto
-  de la lista de alto valor totalmente ausente.
-  Visto en: (ningún archivo — ausencia total).
-
-- **Hueco: estructuras de control en flujos de agentes** — la carpeta
-  `agentes-automatizacion/` no tiene contenido; no hay ningún ejercicio de orquestación,
-  máquina de estados, reintentos, ni lógica de control pensada para un flujo de agente.
-  Visto en: (ningún archivo — ausencia total).
+- **Hueco: estructuras de control en flujos de agentes** — sigue abierto, pero ha avanzado.
+  `agente_2` ya tiene un pipeline lineal con punto de entrada. Todavía no hay orquestación
+  propia (estado explícito entre pasos, ramas condicionales, reintentos). Se cierra al
+  implementar los nodos A→B→C del agente 3.
+  Visto en: (ausencia — actualizado 2026-10-21).
 
 ## 🟡 Prioridad media
+
+- **Claves duplicadas en un diccionario o en una lista de campos** — decisión subóptima
+  (nuevo). En `analisis_estadistico` el diccionario `analisis` repite la clave
+  `"analisisdf3"`: el segundo valor pisa al primero sin aviso y `analisis_nc` nunca llega al
+  Excel. En sesión pasó lo mismo con `fields` (`OverallStatus` repetido, `Phase`/`Phases`).
+  Apuntes del Agente 3, hueco 9.
+  Visto en: Agentes/agente_2/agente_2.py (2026-09-03).
+
+- **Bloques `try/except` copiados en cada función** — decisión subóptima (nuevo). El mismo
+  bloque de tres `except` con el mismo mensaje cortado ("No se pudo conectar con la A")
+  aparece en 4 funciones. Una función auxiliar de petición evitaría copiar el error y el
+  mensaje.
+  Visto en: Agentes/agente_2/agente_2.py, Agentes/Agente3_Ermenegildo/agent_3.py.
+
+- **Código que se ejecuta al importar el archivo** — decisión subóptima (nuevo). `agente_1.1`
+  llama a `genai.configure(api_key=os.environ[...])` al importarse: sin `.env` falla con
+  `KeyError` antes de hacer nada. `agent_3.py` llama a la API al final del archivo sin
+  `if __name__ == "__main__":`. `agente_2` sí lo hace bien: el patrón se conoce pero no se
+  aplica siempre.
+  Visto en: Agentes/agente_1.1/agente_1.1.py, Agentes/Agente3_Ermenegildo/agent_3.py.
+
+- **Scope y firma de las funciones** — hueco (nuevo, de sesión). Bug de `params` (función
+  que usaba la variable global en vez de su parámetro, ya corregido por mí) y dudas entre
+  argumentos posicionales y por nombre (`params1=params`, `requests.get(url, params2, ...)`).
+  Apuntes del Agente 3, huecos 5 y 6.
+  Visto en: sesiones del agente 3 (2026-10).
+
+- **Hueco: estadística descriptiva (coeficiente de variación)** — hueco (nuevo). En
+  `anomalias_precio` queda una pregunta sin resolver en un comentario: *"¿cuál es la razón
+  por la que se compara con la media?"*. El código calcula bien `std / media`, pero falta el
+  porqué: la desviación relativa permite comparar productos de precios muy distintos.
+  Visto en: Agentes/agente_1.1/agente_1.1.py (2026-09-02).
+
+- **`None` frente a `NaN`** — hueco (nuevo, de sesión). Aparece al limpiar listas con
+  `isinstance`; practicar `pd.isna` y `df.isna().sum()`. Apuntes del Agente 3, hueco 7.
+  Visto en: sesiones del agente 3 (2026-10).
 
 - **Estructuras de control — bug de variable en condición** — decisión subóptima: en
   `fundamentos-python/2026-08-04_normalizacion-segmentacion-sets.py`, `pipeline_control`
@@ -135,6 +187,31 @@ agrupada por prioridad — no hace falta que añadas nada.
   la lista de alto valor.
   Visto en: fundamentos-python/2026-08-03.
 
+- **Roles de mensaje inventados para el LLM** — decisión subóptima menor (nuevo). La memoria
+  usa `"role": "analista"`; las APIs de LLM solo aceptan roles fijos (`user`, `assistant` o
+  `model`, `system`). Hoy no rompe nada porque esa memoria no se envía como conversación.
+  Visto en: Agentes/agente_1.1/agente_1.1.py, Agentes/agente_2/agente_2.py.
+
+- **Imports sin usar** — menor (nuevo). `numpy` y `json` en `agente_2` y `agent_3`. Ruff lo
+  detectaría solo, pero el `pre-commit` que menciona `CLAUDE.md` no está configurado en el
+  repo.
+  Visto en: Agentes/agente_2/agente_2.py, Agentes/Agente3_Ermenegildo/agent_3.py.
+
+- **NumPy para datos tabulares con bucles por grupo** — decisión subóptima menor (nuevo).
+  `agente_1.1` agrupa por producto y paciente con bucles sobre `np.unique`, donde
+  `groupby` lo resuelve en una línea. Ya corregido en la práctica: `agente_2` usa pandas.
+  Visto en: Agentes/agente_1.1/agente_1.1.py (2026-09-02).
+
 ## ✅ Superados
 
-*(vacío — primer análisis del repo, aún no hay progreso que comparar entre ejecuciones)*
+- **Manejo de excepciones: `except` demasiado amplio o sin tipar** — ✅ superado el
+  2026-09-03. Antes: `except:` desnudo en `fundamentos-python/2026-08-04` y
+  `except Exception` genérico en `oop/2026-08-11`. En el código nuevo (`agente_2`,
+  `agent_3`) se capturan siempre excepciones específicas de `requests` y el `Exception`
+  genérico va al final. *El siguiente paso, qué devolver tras capturar, sigue abierto
+  arriba.*
+
+- **Hueco: manejo de APIs/requests** — ✅ superado el 2026-09-03. Antes no había ni una
+  llamada HTTP en el repo. Ahora: `requests.get` con `params`, `timeout` y
+  `raise_for_status()` en `agente_2` (API de la FDA) y en el agente 3 (ClinicalTrials.gov,
+  CDC con App Token en cabecera).

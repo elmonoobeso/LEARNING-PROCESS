@@ -34,10 +34,13 @@ Decidido por el usuario el 2026-10-09:
 - Ciclo: el agente llega a una decisión → Claude verifica con búsqueda web y amplía los
   apuntes → el usuario decide y justifica → Claude contrasta y construye esa parte → se
   registra en `decisiones-arquitectura.md`.
-- **Excepción a la regla de autoría, solo en `Agente3_Ermenegildo/`**: el código lo escribe
-  Claude (también la lógica de datos). El usuario quiere criterio de diseño, no escribir el
-  código del framework. El repaso de Python lo hace aparte, con ejercicios propios, donde la
-  regla de autoría normal sigue vigente. La excepción debe constar en el README del agente.
+- **`Agente3_Ermenegildo/` está en modo Arquitectura**: el código lo escribe Claude
+  (también la lógica de datos). El usuario quiere criterio de diseño, no escribir el código
+  del framework. El repaso de Python lo hace aparte, en ejercicios en modo Aprendizaje. El
+  modo consta en el README del agente.
+- **Comprensión verificada antes de cada merge**: el usuario responde 3 preguntas sobre el
+  código nuevo o reescribe de memoria una función clave (ver `CLAUDE.md` raíz, "Workflow de
+  aprendizaje").
 
 ## Prioridad de aprendizaje
 

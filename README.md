@@ -1,18 +1,17 @@
 # Data Analyst — Portfolio de aprendizaje
 
-> ## ⚠️ Nota de autoría — uso de IA por niveles
-> Este repositorio es para aprender, y la IA (Claude) forma parte de cómo aprendo. Para que
-> quede claro qué es mío y qué no, el grado de asistencia se declara por niveles:
+> ## ⚠️ Nota de autoría — modos de trabajo con IA
+> Este repositorio es para aprender, y la IA (Claude) forma parte de cómo aprendo. Cada
+> proyecto declara **un modo** de trabajo, así queda claro qué es mío:
 >
-> | Parte del repo | Quién escribe el código | Papel de la IA |
+> | Modo | Quién escribe el código | Dónde |
 > |---|---|---|
-> | `fundamentos-python/`, `oop/`, `numpy/`, `pandas/` | **Yo, a mano** | Proponer ejercicios y revisar **después** de escribirlos |
-> | `Agentes/agente_1.1`, `Agentes/agente_2` | **Yo**, con excepciones puntuales | Excepciones marcadas línea a línea en el README de cada agente |
-> | `Agentes/Agente3_Ermenegildo` | **IA**, dirigida por mí | Aquí aprendo criterio de arquitectura: yo diseño y decido, la IA implementa. Reparto exacto en su README |
-> | Documentación (READMEs, apuntes) | IA | La genera a partir de mi trabajo y mis decisiones |
+> | **Aprendizaje** | **Yo, a mano.** La IA propone, revisa **después** y documenta | `fundamentos-python/`, `oop/`, `numpy/`, `pandas/`, `agente_1.1`, `agente_2` |
+> | **Arquitectura** | **La IA, dirigida por mí.** Yo diseño y decido; aprendo criterio de arquitectura | `Agente3_Ermenegildo` |
 >
-> Nada está oculto ni presentado como propio sin serlo: cada README temático y cada entrada
-> de ejercicio repite su nivel de autoría.
+> La documentación (READMEs, apuntes) la genera la IA a partir de mi trabajo y mis
+> decisiones. Lo que no encaja en el modo de un proyecto se declara en su commit o PR, nunca
+> se oculta.
 
 ## Quién soy
 
@@ -59,6 +58,23 @@ solo enseña resultados pulidos.
   organizar, decidir y justificar la arquitectura. Cada decisión queda registrada con sus
   alternativas en [`Agentes/decisiones-arquitectura.md`](Agentes/decisiones-arquitectura.md).
 
+## Cómo aprendo (workflow)
+
+Cada sesión de trabajo termina con la misma rutina (skill
+[`cierre-sesion`](.claude/skills/cierre_sesion/SKILL.md)):
+
+1. **Explico lo aprendido con mis palabras** en 3 líneas, y la IA las corrige. Lo que
+   entiendo mal se convierte en un hueco de conocimiento registrado.
+2. **Compruebo que entiendo el código que escribe la IA** antes de fusionarlo: respondo
+   preguntas sobre él o reescribo de memoria una función clave.
+3. **Registro las decisiones** en el repo, con las alternativas descartadas.
+4. **Actualizo mis errores** en [`errores-recurrentes.md`](errores-recurrentes.md): solo
+   cuenta mi código, y un error pasa a "superado" cuando dejo de cometerlo.
+5. **Cada PR cuenta qué se aprendió** ([plantilla](.github/pull_request_template.md)).
+
+Los ejercicios de repaso sobre mis errores los pido yo, cuando quiero, y se hacen en este
+repositorio.
+
 ## Estructura
 
 ```
@@ -77,7 +93,8 @@ solo enseña resultados pulidos.
 ├── requirements.txt      # Dependencias del repositorio, comentadas en ES/EN
 ├── errores-recurrentes.md  # Seguimiento de patrones de error y huecos de conocimiento
 ├── CLAUDE.md             # Reglas de trabajo con IA (autoría, git, estilo)
-└── .claude/skills/       # Skills propias: documentación y análisis de errores
+├── .claude/skills/       # Skills propias: cierre de sesión, documentación, análisis de errores
+└── .github/              # Plantilla de Pull Request
 ```
 
 Cada carpeta temática tiene su propio `README.md` con una entrada detallada por ejercicio
@@ -91,7 +108,7 @@ Cada carpeta temática tiene su propio `README.md` con una entrada detallada por
 | [oop](oop/README.md) | 5 | 2026-08-06 → 2026-08-11 | 4 ⚠️ con errores/incompletos · 1 🔄 en progreso |
 | [numpy](numpy/README.md) | 2 | 2026-08-13 → 2026-08-21 | 1 ✅ funcional · 1 ⚠️ con errores |
 | [pandas](pandas/README.md) | 4 | 2026-08-25 → 2026-08-29 | 2 ✅ funcionales · 2 ⚠️ con errores |
-| Agentes | 3 | 2026-08 → 2026-10 | [`agente_2`](Agentes/agente_2/README.md) ✅ ejecuta de principio a fin (API FDA + pandas + Gemini); `agente_1.1` recuperado de un proyecto anterior, sirve de referencia de diseño; [`Agente3_Ermenegildo`](Agentes/Agente3_Ermenegildo/README.md) 🔄 fetch de ClinicalTrials.gov funcionando, orquestación con LangGraph decidida |
+| Agentes | 3 | 2026-08 → 2026-10 | [`agente_2`](Agentes/agente_2/README.md) ✅ ejecuta de principio a fin (API FDA + pandas + Gemini); [`agente_1.1`](Agentes/agente_1.1/README.md) 📚 primer agente (NumPy, reglas de negocio de farmacia), referencia de diseño no ejecutable; [`Agente3_Ermenegildo`](Agentes/Agente3_Ermenegildo/README.md) 🔄 fetch de ClinicalTrials.gov funcionando, orquestación con LangGraph decidida |
 
 **Total: 23 ejercicios/proyectos.**
 
@@ -119,16 +136,21 @@ la fuente de verdad para los ejercicios nuevos.
 
 # Data Analyst — Learning Portfolio (EN)
 
-> ## ⚠️ Authorship note — tiered AI use
-> This is a learning repository and AI (Claude) is part of how I learn. The level of
-> assistance is declared per area:
+> ## ⚠️ Authorship note — AI work modes
+> This is a learning repository and AI (Claude) is part of how I learn. Each project
+> declares **one mode**:
 >
-> | Area | Who writes the code | AI's role |
+> | Mode | Who writes the code | Where |
 > |---|---|---|
-> | `fundamentos-python/`, `oop/`, `numpy/`, `pandas/` | **Me, by hand** | Propose exercises and review **after** writing |
-> | `Agentes/agente_1.1`, `Agentes/agente_2` | **Me**, with specific exceptions | Exceptions marked line by line in each agent's README |
-> | `Agentes/Agente3_Ermenegildo` | **AI, directed by me** | Here I train architecture judgment: I design and decide, AI implements. Exact split in its README |
-> | Documentation (READMEs, notes) | AI | Generated from my work and decisions |
+> | **Learning** | **Me, by hand.** AI proposes, reviews **after** writing and documents | `fundamentos-python/`, `oop/`, `numpy/`, `pandas/`, `agente_1.1`, `agente_2` |
+> | **Architecture** | **AI, directed by me.** I design and decide; I train architecture judgment | `Agente3_Ermenegildo` |
+>
+> Documentation is generated by AI from my work and decisions. Anything outside a project's
+> mode is declared in its commit or PR, never hidden.
+>
+> **How I learn:** every session ends with the same routine: I explain what I learned in
+> my own words and AI corrects it; I verify I understand any AI-written code before merging;
+> decisions are logged with their alternatives; and my error log only counts my own code.
 
 ## Who I am
 

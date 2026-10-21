@@ -1,6 +1,6 @@
 # Agente 3 — Ermenegildo (biosimilares)
 
-> **Nota de autoría (excepción documentada):** a diferencia del resto del repositorio, donde
+> **Modo de autoría: Arquitectura.** A diferencia de los proyectos en modo Aprendizaje, donde
 > el código lo escribe el usuario a mano, **en este agente el código lo escribe la IA
 > (Claude)**, por decisión explícita del usuario el 2026-10-09. El objetivo aquí no es
 > practicar sintaxis sino aprender **criterio de arquitectura de agentes**: el usuario decide
