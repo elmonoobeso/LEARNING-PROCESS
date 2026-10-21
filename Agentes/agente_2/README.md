@@ -1,6 +1,6 @@
 # agente_2 — AgenteFDA
 
-> **Nota de autoría (excepciones documentadas):** este script sigue la misma regla del resto del
+> **Modo de autoría: Aprendizaje.** Este script sigue la misma regla del resto del
 > repositorio — código escrito a mano por el usuario, con IA solo para proponer, revisar o
 > documentar — **con dos excepciones explícitas**, ambas a petición directa del usuario y
 > marcadas como tal en vez de presentarse como escritas a mano:

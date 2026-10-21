@@ -15,18 +15,16 @@ cómo se trabaja aquí:
 
 ## Regla de autoría (la más importante — leer antes de tocar cualquier ejercicio o agente)
 
-La autoría se declara **por niveles** (tabla completa en la "Nota de autoría" del
-`README.md` raíz; cualquier cambio de nivel se refleja ahí y en el README afectado):
+Cada proyecto declara **un modo de autoría**, una sola vez (tabla en la "Nota de autoría"
+del `README.md` raíz). No se cuentan ni se listan excepciones:
 
-- **Ejercicios** (`fundamentos-python/`, `oop/`, `numpy/`, `pandas/`) y **lógica de
-  análisis/dominio de `agente_1.1` y `agente_2`**: regla estricta de abajo.
-- **Arquitectura/orquestación de agentes**: Claude puede escribir código (ver
-  `Agentes/CLAUDE.md`).
-- **`Agentes/Agente3_Ermenegildo/`**: excepción completa decidida por el usuario el
-  2026-10-09 — Claude escribe el código bajo su dirección; el reparto exacto consta en el
-  README del agente.
+- **Aprendizaje** — `fundamentos-python/`, `oop/`, `numpy/`, `pandas/`, `agente_1.1`,
+  `agente_2`: regla estricta de abajo.
+- **Arquitectura** — `Agentes/Agente3_Ermenegildo/` (decidido por el usuario el
+  2026-10-09): Claude escribe el código bajo su dirección; el usuario diseña y decide. Ver
+  `Agentes/CLAUDE.md`.
 
-**Regla estricta: Claude nunca escribe el código de los ejercicios.** El código lo escribe
+**Regla estricta (modo Aprendizaje): Claude nunca escribe el código de los ejercicios.** El código lo escribe
 siempre el usuario a mano. El uso permitido de Claude en el código es exclusivamente:
 
 1. Proponer o plantear ejercicios.
@@ -34,10 +32,9 @@ siempre el usuario a mano. El uso permitido de Claude en el código es exclusiva
    problemas, explicar por qué, sugerir — no reescribir por él).
 3. Generar documentación (READMEs, clasificación por tema).
 
-Si el usuario pide explícitamente que Claude escriba o complete código de un ejercicio, es
-una excepción puntual y debe quedar marcada explícitamente como tal en el README del
-proyecto correspondiente (ver `Agentes/agente_2/README.md` para el precedente), nunca oculta
-ni presentada como del usuario.
+Si el usuario pide explícitamente que Claude escriba o complete código en modo Aprendizaje,
+se declara en el mensaje del commit o en la descripción del PR, nunca se oculta ni se
+presenta como del usuario. No se añade a ninguna lista del README.
 
 Esta regla **no aplica** a tareas de infraestructura del repo: git/GitHub, este archivo,
 configuración de Ruff, scripts de `pre-commit`, READMEs — ahí Claude puede actuar con
@@ -112,15 +109,32 @@ autoría tomada en una sesión se escribe en el repo **antes de cerrar la sesió
 `Agentes/decisiones-arquitectura.md`). Antes de abrir un PR, comprobar que el README raíz
 (tabla resumen, estructura, nota de autoría) sigue reflejando el estado real del repo.
 
+## Workflow de aprendizaje
+
+Objetivo: que cada sesión fije conocimiento, no solo que produzca código.
+
+1. **"Qué aprendí" lo escribe el usuario; Claude lo corrige.** 3 líneas con sus palabras
+   por ejercicio, agente o PR. Claude nunca las redacta por él: las corrige (concepto
+   erróneo, impreciso o incompleto) explicando el porqué, y los malentendidos se registran
+   como huecos.
+2. **Comprensión verificada del código de la IA.** Antes de fusionar código escrito por
+   Claude (modo Arquitectura), el usuario responde 3 preguntas sobre él o reescribe de
+   memoria una función clave. Si falla, no se bloquea el merge: se registra el hueco.
+3. **Ejercicios de repaso: solo cuando el usuario los pida** y solo para hacerlos en este
+   repo. Claude no los propone por iniciativa propia.
+4. **Rutina única de cierre:** skill `cierre-sesion`.
+
 ## Seguimiento de errores
 
 Patrones de error recurrentes y huecos de conocimiento se registran en
-`errores-recurrentes.md` vía la skill `analizador_errores`.
+`errores-recurrentes.md` vía la skill `analizador_errores`. Solo cuenta el código escrito
+por el usuario; el de la IA nunca se le atribuye como error.
 
 ## Recap de fin de sesión
 
-Al terminar una sesión de trabajo (cuando el usuario indica que lo deja por hoy, se despide,
-o lo pide explícitamente), Claude hace un recap breve con dos partes:
+Forma parte de la skill `cierre-sesion`. Al terminar una sesión de trabajo (cuando el
+usuario indica que lo deja por hoy, se despide, o lo pide explícitamente), Claude ejecuta
+esa skill, que acaba con un recap breve en dos partes:
 
 1. **Qué se estudió/repasó/aprendió de nuevo** en la sesión (conceptos, herramientas,
    decisiones tomadas).
@@ -129,8 +143,9 @@ o lo pide explícitamente), Claude hace un recap breve con dos partes:
 
 ## Formato de código: Ruff
 
-Ruff (format + check) se ejecuta automáticamente antes de cada commit vía `pre-commit`.
-Cubre estilo (formateo) y también detección de bugs no relacionados con IA (variables no
+**Pendiente de configurar** (a 2026-10-21 no hay `.pre-commit-config.yaml` ni configuración
+de Ruff en el repo). Objetivo: que Ruff (format + check) se ejecute automáticamente antes de
+cada commit vía `pre-commit`. Cubre estilo (formateo) y también detección de bugs no relacionados con IA (variables no
 definidas, imports sin usar, etc. — reglas de Pyflakes incluidas por defecto). No reescribe
 lógica, solo aplica estilo y señala problemas — no entra en conflicto con la regla de
 autoría.

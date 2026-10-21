@@ -7,7 +7,34 @@ description: Analiza el código del repo para detectar patrones de error recurre
 
 ## Cuándo se activa
 Cuando el usuario pide "analiza mis errores", "actualiza el análisis de 
-errores", o invoca `/analizador-errores`.
+errores", invoca `/analizador-errores`, o desde la skill `cierre-sesion`.
+
+## Qué código cuenta (importante)
+Solo el código escrito por el usuario. Mira el modo de autoría de cada
+proyecto en su README (tabla "Nota de autoría" del README raíz):
+- Modo **Aprendizaje** → se analiza entero.
+- Modo **Arquitectura** (p. ej. `Agente3_Ermenegildo`) → solo las partes
+  que su README atribuye al usuario. El código de la IA nunca cuenta como
+  error del usuario.
+- Fuera de este repo (p. ej. SmartPharma, modo Producto) → no se analiza.
+
+## Fuentes además del código
+- Huecos de los apuntes vivos del Agente 3
+  (`C:\Users\migue\Documents\LEARNING-PROCESS-recaps\apuntes_agente3_ermenegildo.md`,
+  sección "Huecos de conocimiento"): se integran aquí para que haya una
+  sola lista.
+- Correcciones de los "Qué aprendí" del usuario: un malentendido de
+  concepto es un hueco.
+- Fallos de la comprensión verificada del código de la IA.
+Marca estas entradas como "(de sesión)".
+
+## Ejercicios de repaso
+Solo cuando el usuario los pida, y solo para hacerlos en este repo
+(LEARNING-PROCESS). Nunca los propongas por iniciativa propia.
+- Dirígelos a las entradas de prioridad alta (o a las que pida el usuario).
+- Cada ejercicio cita la entrada que trabaja.
+- Una entrada pasa a "✅ Superado" cuando el usuario resuelve su ejercicio,
+  o escribe código nuevo de ese concepto, sin repetir el error.
 
 ## Archivo de estado persistente
 Mantiene un único archivo: `errores-recurrentes.md` en la raíz del repo.
@@ -58,6 +85,8 @@ frente a errores en código irrelevante para ese objetivo.
 
 Cuando pases esta lista para pedir ejercicios de repaso, ya viene 
 agrupada por prioridad — no hace falta que añadas nada.
+
+**Qué se analiza**: [párrafo corto con el alcance según modos de autoría]
 
 ## 🔴 Prioridad alta
 - **[Concepto]** — [tipo: sintaxis/decisión subóptima/hueco] 
