@@ -18,12 +18,16 @@ requests
 python-dotenv
 
 # Integracion con el modelo de lenguaje Gemini para interpretar los analisis (Agentes/).
-# Nota: este paquete esta descatalogado por Google a favor de "google-genai" - lo usamos
-# porque sigue funcionando, pero es candidato a migracion futura.
+# "google-genai" es la libreria oficial actual (la usa agente_2 desde la v2).
+# "google-generativeai" ya no tiene soporte de Google; solo la importa agente_1.1.
 # Integration with the Gemini language model to interpret the analyses (Agentes/).
-# Note: this package is deprecated by Google in favor of "google-genai" - we use it
-# because it still works, but it is a candidate for future migration.
+# "google-genai" is the current official library (used by agente_2 since v2).
+# "google-generativeai" is no longer supported by Google; only agente_1.1 imports it.
+google-genai
 google-generativeai
+
+# Tests (python -m pytest Agentes/agente_2).
+pytest
 
 # Motor que pandas necesita por debajo para leer/escribir archivos .xlsx (exportar_resultados).
 # Engine pandas needs under the hood to read/write .xlsx files (exportar_resultados).
