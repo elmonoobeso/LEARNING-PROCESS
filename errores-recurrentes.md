@@ -20,6 +20,7 @@ correcciones de mis "Qué aprendí" y fallos de la comprensión verificada).
   explícito que quien llama compruebe. También señalado en los apuntes del Agente 3 (hueco 8).
   Visto en: Agentes/agente_2/agente_2.py (2026-09-03), Agentes/Agente3_Ermenegildo/agent_3.py
   (2026-10-09).
+  *(2026-11-14: en `agente_2` lo corrigió la IA a petición mía; no cuenta como superado.)*
 
 - **Grano de la tabla: un registro contado dos veces** — decisión subóptima (nuevo). En
   `AgenteFDA.validar_clases`, un mismo registro puede acabar dos veces en `no_validos` (clase
@@ -27,6 +28,7 @@ correcciones de mis "Qué aprendí" y fallos de la comprensión verificada).
   salen de esas listas quedan inflados sin dar error. Es el mismo hueco que los apuntes del
   Agente 3 llaman "grano" (hueco 2): decidir qué es una fila antes de transformar.
   Visto en: Agentes/agente_2/agente_2.py (2026-09-03).
+  *(2026-11-14: en `agente_2` lo corrigió la IA a petición mía; no cuenta como superado.)*
 
 - **Verificar la forma de los datos antes de usarlos** — hueco (nuevo, de sesión).
   `obtencion_datos_prevalencia` devuelve `datos["results"][0]` (solo el primer elemento, y
@@ -86,6 +88,7 @@ correcciones de mis "Qué aprendí" y fallos de la comprensión verificada).
   Excel. En sesión pasó lo mismo con `fields` (`OverallStatus` repetido, `Phase`/`Phases`).
   Apuntes del Agente 3, hueco 9.
   Visto en: Agentes/agente_2/agente_2.py (2026-09-03).
+  *(2026-11-14: en `agente_2` lo corrigió la IA a petición mía; no cuenta como superado.)*
 
 - **Bloques `try/except` copiados en cada función** — decisión subóptima (nuevo). El mismo
   bloque de tres `except` con el mismo mensaje cortado ("No se pudo conectar con la A")

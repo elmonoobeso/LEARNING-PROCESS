@@ -1,125 +1,160 @@
-import pandas as pd
-import numpy as np
-import requests
-import json
-from pathlib import Path
 import os
+from pathlib import Path
+
+import pandas as pd
+import requests
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import errors, types
 
-load_dotenv()
-genai.configure(api_key=os.environ["Gemini_API_KEY"])
+URL_FDA = "https://api.fda.gov/drug/enforcement.json"
+PARAMS_FDA = {"limit": 100}  # filtro tipo query (no es SQL): se puede filtrar, p. ej., por tipo de medicamento
+MODELO_GEMINI = "gemini-3.5-flash"  # versión fija: los alias tipo "-latest" pueden desaparecer
+TIMEOUT_GEMINI_MS = 90_000  # sin límite, un modelo saturado puede dejar el agente colgado
+CLASES_VALIDAS = ["Class I", "Class II", "Class III"]
+CAMPOS_OBLIGATORIOS = ["product_description", "reason_for_recall", "recalling_firm"]
 
-url="https://api.fda.gov/drug/enforcement.json"
-params={"limit": 100}#filtro tipo query, pero no es SQL, puedo por ejemplo filtrar por tipo de medicamento.
-def obtencion_datos(url,params):
+
+def obtencion_datos(url, params):
+    """Descarga los registros de retiradas de la FDA.
+
+    Si la petición falla, lanza RuntimeError con el motivo en vez de devolver None
+    en silencio: así el error salta donde ocurre y no más adelante.
+    """
     try:
-        respuesta=requests.get(url,params=params,timeout=15)
+        respuesta = requests.get(url, params=params, timeout=15)
         respuesta.raise_for_status()
-        datos=respuesta.json()
-        return datos["results"]
-    except requests.exceptions.Timeout:
-        print("la respuesta tardo demasiado")
+        datos = respuesta.json()
+    except requests.exceptions.Timeout as error:
+        raise RuntimeError("La API de la FDA tardó demasiado en responder") from error
     except requests.exceptions.HTTPError as error:
-        print(f"Error HTTP: {error}")
-    except requests.exceptions.ConnectionError:
-        print("No se pudo conectar con la A")
-    
+        raise RuntimeError(f"La API de la FDA devolvió un error HTTP: {error}") from error
+    except requests.exceptions.ConnectionError as error:
+        raise RuntimeError("No se pudo conectar con la API de la FDA") from error
+    except ValueError as error:
+        raise RuntimeError("La API de la FDA no devolvió un JSON válido") from error
+    return datos.get("results", [])
+
 
 class AgenteFDA:
     def __init__(self):
-        self.datos=None
-        self.memoria=[{"role":"system","content":"Eres un analista regulatorio con formación farmacéutica. Tu objetivo es interpretar los datos de alertas y retiradas de medicamentos de la FDA que te proporciona el script, y explicar en lenguaje claro qué patrones o riesgos son relevantes para un farmacéutico."}]
+        self.datos = []
+        self.memoria = [{"role": "system", "content": "Eres un analista regulatorio con formación farmacéutica. Tu objetivo es interpretar los datos de alertas y retiradas de medicamentos de la FDA que te proporciona el script, y explicar en lenguaje claro qué patrones o riesgos son relevantes para un farmacéutico."}]
+
     def agregar_mensaje_usuario(self, mensaje):
-        self.memoria.append({"role":"user","content":mensaje})
+        self.memoria.append({"role": "user", "content": mensaje})
+
     def respuesta_agente(self, respuesta):
-        self.memoria.append({"role":"analista","content":respuesta})
+        # "model" es el rol que usa Gemini para sus propias respuestas
+        self.memoria.append({"role": "model", "content": respuesta})
+
     def obtener_memoria_completa(self):
         return self.memoria
 
-
     def obtener_datos(self):
-        self.datos=obtencion_datos(url,params)
+        self.datos = obtencion_datos(URL_FDA, PARAMS_FDA)
+
     def validar_clases(self):
-        valor_error=[]
-        clave_error=[]
-        no_validos=[]
-        error_varios=[]
-        validos_clase=[]
-        validos_no_vac=[]
+        """Separa los registros en válidos y no válidos.
+
+        Grano: una fila = una retirada. Cada registro va a UNA sola lista; si tiene
+        varios problemas, se juntan en "motivo_no_valido" en vez de contarlo dos veces.
+        openFDA omite los campos vacíos en vez de enviarlos como None, por eso .get().
+        """
+        validos, no_validos, errores = [], [], []
         for registro in self.datos:
-            try:
-                if registro["classification"] in ["Class I","Class II","Class III"]:
-                    validos_clase.append(registro)
-                else:
-                    no_validos.append(registro)
-                    
-                if not None in  [registro["product_description"],registro["reason_for_recall"],registro["recalling_firm"]]:
-                    validos_no_vac.append(registro)
+            if not isinstance(registro, dict):
+                errores.append({"registro": str(registro)[:200], "error": "el registro no es un diccionario"})
+                continue
+            motivos = []
+            if registro.get("classification") not in CLASES_VALIDAS:
+                motivos.append("clasificación no válida")
+            vacios = [campo for campo in CAMPOS_OBLIGATORIOS if not registro.get(campo)]
+            if vacios:
+                motivos.append("faltan campos: " + ", ".join(vacios))
+            if motivos:
+                no_validos.append({**registro, "motivo_no_valido": "; ".join(motivos)})
+            else:
+                validos.append(registro)
+        return validos, no_validos, errores
 
-                else:
-                    no_validos.append(registro)
-            except ValueError as error:
-                valor_error.append(error)
-            except KeyError as error:
-                clave_error.append(error)
-            except Exception as error:
-                error_varios.append(error)
-        return(valor_error,clave_error,no_validos,error_varios,validos_clase,validos_no_vac)
-    def analisis_estadistico(self,valor_error,clave_error,no_validos,error_varios,validos_clase,validos_no_vac):
-        df1=pd.DataFrame(no_validos)
-        df2=pd.DataFrame(validos_no_vac)
-        df3=pd.DataFrame(validos_clase)
-        df_errores=pd.DataFrame(error_varios)
-        analisis_nov=pd.DataFrame({"Tipodato":df2.dtypes,"no_nulos":df2.count(),"nulos":df2.isnull().sum()})
-        if df2.empty:
-            analisis_clasificacion=pd.Series(dtype="int64")
-            analisis_farmaceutica=pd.Series(dtype="int64")
+    def analisis_estadistico(self, validos, no_validos, errores):
+        """Resume los registros. Cada clave del diccionario es una hoja del Excel."""
+        df_validos = pd.DataFrame(validos)
+        df_no_validos = pd.DataFrame(no_validos)
+        if df_validos.empty:
+            info_validos = pd.DataFrame()
+            resumen_validos = pd.DataFrame()
+            por_clasificacion = pd.Series(dtype="int64")
+            por_empresa = pd.Series(dtype="int64")
         else:
-            analisis_clasificacion=df2.groupby("classification")["reason_for_recall"].count()
-            analisis_farmaceutica=df2.groupby("recalling_firm")["classification"].count()
-        if df_errores.empty:
-            analisis_errores=pd.DataFrame()
+            info_validos = pd.DataFrame({"tipo_dato": df_validos.dtypes, "no_nulos": df_validos.count(), "nulos": df_validos.isnull().sum()})
+            # describe() no puede contar valores únicos de columnas con dicts o listas (p. ej. "openfda")
+            simples = [col for col in df_validos.columns if not df_validos[col].map(lambda v: isinstance(v, (dict, list))).any()]
+            resumen_validos = df_validos[simples].describe()
+            por_clasificacion = df_validos["classification"].value_counts().sort_index()
+            por_empresa = df_validos["recalling_firm"].value_counts()
+        if df_no_validos.empty:
+            motivos_no_validos = pd.Series(dtype="int64")
         else:
-            analisis_errores=df_errores.describe()
-        analisis_nc=df3.describe()
-        analisis_farm=df3.groupby("recalling_firm")["reason_for_recall"].count()
+            motivos_no_validos = df_no_validos["motivo_no_valido"].value_counts()
 
-        analisis={"info":analisis_nov,"analisis_clasificacion":analisis_clasificacion,"analisis_farmaceutica":analisis_farmaceutica,"analisis_errores":analisis_errores,"analisisdf3":analisis_nc,"analisisdf3":analisis_farm}
-        return analisis
+        return {
+            "info_validos": info_validos,
+            "resumen_validos": resumen_validos,
+            "por_clasificacion": por_clasificacion,
+            "por_empresa": por_empresa,
+            "motivos_no_validos": motivos_no_validos,
+            "errores": pd.DataFrame(errores),
+        }
 
-    def exportar_resultados(self, analisis):
-        
-        carpeta=Path("analisis_es")
+    def exportar_resultados(self, analisis, carpeta=Path("analisis_es")):
         carpeta.mkdir(exist_ok=True)
-        with pd.ExcelWriter(carpeta/"analisis.xlsx") as writer:
+        ruta = carpeta / "analisis.xlsx"
+        with pd.ExcelWriter(ruta) as writer:
             for nombre_hoja, tabla in analisis.items():
-                tabla.to_excel(writer,sheet_name=nombre_hoja)
+                tabla.to_excel(writer, sheet_name=nombre_hoja)
+        return ruta
+
     def interpretar_analisis(self, analisis):
+        api_key = os.environ.get("Gemini_API_KEY")
+        if not api_key:
+            raise RuntimeError("Falta Gemini_API_KEY en el archivo .env")
         resumen_texto = ""
         for nombre_hoja, tabla in analisis.items():
             resumen_texto += f"\n\n--- {nombre_hoja} ---\n{tabla.to_string()}"
         self.agregar_mensaje_usuario(
             f"Aquí tienes el análisis de recalls de la FDA. Explícame qué es lo más relevante:{resumen_texto}")
-        prompt = self.memoria[0]["content"] + "\n\n" + self.memoria[-1]["content"]
-        modelo = genai.GenerativeModel("gemini-flash-latest")
-        respuesta = modelo.generate_content(prompt)
+        cliente = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=TIMEOUT_GEMINI_MS))
+        respuesta = cliente.models.generate_content(
+            model=MODELO_GEMINI,
+            contents=self.memoria[-1]["content"],
+            config=types.GenerateContentConfig(system_instruction=self.memoria[0]["content"]),
+        )
         self.respuesta_agente(respuesta.text)
         return respuesta.text
-if __name__ == "__main__":
+
+
+def main():
+    load_dotenv()
     agente = AgenteFDA()
-    agente.obtener_datos()
-    resultados = agente.validar_clases()
-    analisis = agente.analisis_estadistico(*resultados)
-    agente.exportar_resultados(analisis)
-    interpretacion = agente.interpretar_analisis(analisis)
-    print(interpretacion)
+    try:
+        agente.obtener_datos()
+    except RuntimeError as error:
+        print(f"No se pudieron obtener los datos: {error}")
+        return 1
+    validos, no_validos, errores = agente.validar_clases()
+    print(f"{len(agente.datos)} registros: {len(validos)} válidos, {len(no_validos)} no válidos, {len(errores)} con error")
+    analisis = agente.analisis_estadistico(validos, no_validos, errores)
+    ruta = agente.exportar_resultados(analisis)
+    print(f"Excel generado en {ruta}")
+    try:
+        print(agente.interpretar_analisis(analisis))
+    except (RuntimeError, errors.APIError) as error:
+        print(f"No se pudo generar la interpretación: {error}")
+        return 1
+    return 0
 
-        
 
-
-
-
-
-        
-
+if __name__ == "__main__":
+    raise SystemExit(main())
